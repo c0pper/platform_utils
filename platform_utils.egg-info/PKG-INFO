@@ -1,0 +1,5 @@
+Metadata-Version: 2.1
+Name: platform-utils
+Version: 0.1.0
+Summary: Collection of functions and utilities to create annotated libraries to be uploaded on EAI Platform
+Author: Simone Martin Marotta
