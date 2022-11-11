@@ -1,7 +1,7 @@
 import json
 from tqdm import tqdm
 from datetime import datetime
-from platform_utils.functions import create_libraries_zip, create_folder_structure, normalize_fucked_encoding, \
+from platform_utils_eai.functions import create_libraries_zip, create_folder_structure, normalize_fucked_encoding, \
     create_annotated_file
 
 
