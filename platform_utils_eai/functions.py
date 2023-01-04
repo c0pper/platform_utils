@@ -65,7 +65,7 @@ def create_folder_structure(root_path: str, timestamp: str) -> dict:
         "tax_test_folder": tax_test_folder,
         "tax_ann_folder": tax_ann_folder,
         "xtr_test_folder": xtr_test_folder,
-        "xtr_ann_folder": xtr_ann_folder.join,
+        "xtr_ann_folder": xtr_ann_folder,
         "tax_folder": tax_folder,
         "xtr_folder": xtr_folder,
         "timenow": timenow
