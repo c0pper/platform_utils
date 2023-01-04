@@ -1,1 +1,8 @@
 https://medium.com/analytics-vidhya/how-to-create-a-python-library-7d5aea80cc3f
+
+Step 5: Build your library
+Now that all the content is there, we want to build our library. Make sure your present working directory is /path/to/mypythonlibrary (so the root folder of your project). In your command prompt, run:
+> python setup.py bdist_wheel
+
+https://realpython.com/pypi-publish-python-package/#prepare-your-package-for-publication
+twine upload dist/*
