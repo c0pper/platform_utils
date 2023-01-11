@@ -1,0 +1,466 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>platform_utils_eai.functions &mdash; platform_utils_eai 0.2.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> platform_utils_eai
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../platform_utils_eai.html">platform_utils_eai package</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">platform_utils_eai</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>platform_utils_eai.functions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for platform_utils_eai.functions</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module containes functions to create annotated libraries to be imported into EAI Platform</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">zipfile</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generator</span>
+
+
+<span class="c1"># class AnnotationJob:</span>
+<span class="c1">#     def __init__(self, root_path: str):</span>
+<span class="c1">#         self.root_path = root_path</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1"># class CategorizationJob(AnnotationJob):</span>
+<span class="c1">#     def __init__(self, root_path: str, taxonomy: list = None):</span>
+<span class="c1">#         super().__init__(root_path)</span>
+<span class="c1">#         if not taxonomy:</span>
+<span class="c1">#             self.taxonomy = []</span>
+
+
+<div class="viewcode-block" id="create_annotated_file"><a class="viewcode-back" href="../../platform_utils_eai.html#platform_utils_eai.functions.create_annotated_file">[docs]</a><span class="k">def</span> <span class="nf">create_annotated_file</span><span class="p">(</span><span class="n">folders</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">annotations</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generic annotation creation function, needs to be worked on</span>
+
+<span class="sd">    :param folders: dict con percorsi delle cartelle tax_test, tax_ann, xtr_test, xtr_ann, tax, xtr + timenow. Creato con create_folder_structure</span>
+<span class="sd">    :param filename: nome file senza estensione</span>
+<span class="sd">    :param text: testo annotato</span>
+<span class="sd">    :param annotations: lista di annotazioni associate al testo</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># categorization</span>
+    <span class="n">tax_count</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">folders</span><span class="p">[</span><span class="s1">&#39;tax_test_folder&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">.txt&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="c1"># print(txt)</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">folders</span><span class="p">[</span><span class="s1">&#39;tax_ann_folder&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">.ann&quot;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ann</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">annotations</span><span class="p">:</span>
+            <span class="n">ann</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;C</span><span class="si">{</span><span class="n">tax_count</span><span class="si">}</span><span class="s2">		</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">tax_count</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">ann</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="create_folder_structure"><a class="viewcode-back" href="../../platform_utils_eai.html#platform_utils_eai.functions.create_folder_structure">[docs]</a><span class="k">def</span> <span class="nf">create_folder_structure</span><span class="p">(</span><span class="n">root_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates folder structure to be used by :func:`create_libraries_zip`</span>
+
+<span class="sd">    :param root_path: Dev&#39;essere raw string. Percorso completo dove verrà creata o si trova già la cartella runs contenente le varie run</span>
+<span class="sd">    :return: dizionario con percorsi delle cartelle tax_test, tax_ann, xtr_test, xtr_ann, tax, xtr + timenow</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">timenow</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">_%m_%y_%H_%M&#39;</span><span class="p">)</span>
+    <span class="n">tax_test_folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">root_path</span><span class="si">}</span><span class="s2">/runs/run_</span><span class="si">{</span><span class="n">timenow</span><span class="si">}</span><span class="s2">/tax/test&quot;</span><span class="p">)</span>
+    <span class="n">tax_ann_folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">root_path</span><span class="si">}</span><span class="s2">/runs/run_</span><span class="si">{</span><span class="n">timenow</span><span class="si">}</span><span class="s2">/tax/ann&quot;</span><span class="p">)</span>
+    <span class="n">xtr_test_folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">root_path</span><span class="si">}</span><span class="s2">/runs/run_</span><span class="si">{</span><span class="n">timenow</span><span class="si">}</span><span class="s2">/xtr/test&quot;</span><span class="p">)</span>
+    <span class="n">xtr_ann_folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">root_path</span><span class="si">}</span><span class="s2">/runs/run_</span><span class="si">{</span><span class="n">timenow</span><span class="si">}</span><span class="s2">/xtr/ann&quot;</span><span class="p">)</span>
+
+    <span class="n">tax_ann_split_folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">tax_test_folder</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;ann_split&quot;</span><span class="p">)</span>
+    <span class="n">tax_test_split_folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">tax_test_folder</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;test_split&quot;</span><span class="p">)</span>
+    <span class="n">xtr_ann_split_folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">xtr_test_folder</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;ann_split&quot;</span><span class="p">)</span>
+    <span class="n">xtr_test_split_folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">xtr_test_folder</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;test_split&quot;</span><span class="p">)</span>
+
+    <span class="n">tax_test_folder</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">tax_ann_folder</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">xtr_test_folder</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">xtr_ann_folder</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">tax_ann_split_folder</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">tax_test_split_folder</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">xtr_ann_split_folder</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">xtr_test_split_folder</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;tax_test_folder&quot;</span><span class="p">:</span> <span class="n">tax_test_folder</span><span class="p">,</span>
+        <span class="s2">&quot;tax_ann_folder&quot;</span><span class="p">:</span> <span class="n">tax_ann_folder</span><span class="p">,</span>
+        <span class="s2">&quot;xtr_test_folder&quot;</span><span class="p">:</span> <span class="n">xtr_test_folder</span><span class="p">,</span>
+        <span class="s2">&quot;xtr_ann_folder&quot;</span><span class="p">:</span> <span class="n">xtr_ann_folder</span><span class="p">,</span>
+        <span class="s2">&quot;tax_folder&quot;</span><span class="p">:</span> <span class="n">tax_test_folder</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span>
+        <span class="s2">&quot;xtr_folder&quot;</span><span class="p">:</span> <span class="n">xtr_test_folder</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span>
+        <span class="s2">&quot;tax_ann_split_folder&quot;</span><span class="p">:</span> <span class="n">tax_ann_split_folder</span><span class="p">,</span>
+        <span class="s2">&quot;tax_test_split_folder&quot;</span><span class="p">:</span> <span class="n">tax_test_split_folder</span><span class="p">,</span>
+        <span class="s2">&quot;xtr_ann_split_folder&quot;</span><span class="p">:</span> <span class="n">xtr_ann_split_folder</span><span class="p">,</span>
+        <span class="s2">&quot;xtr_test_split_folder&quot;</span><span class="p">:</span> <span class="n">xtr_test_split_folder</span><span class="p">,</span>
+        <span class="s2">&quot;timenow&quot;</span><span class="p">:</span> <span class="n">timenow</span>
+    <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="create_libraries_zip"><a class="viewcode-back" href="../../platform_utils_eai.html#platform_utils_eai.functions.create_libraries_zip">[docs]</a><span class="k">def</span> <span class="nf">create_libraries_zip</span><span class="p">(</span><span class="n">folders</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates libraries zip files to ready to be imported to the Platform. Both ann and test files should be split in</span>
+<span class="sd">    train and val folders and inside there should be a folder for each class (as created by split-folders package)</span>
+
+<span class="sd">    :param timestamp: momento creazione run - datetime.now().strftime(&#39;%d_%m_%y_%H_%M&#39;)</span>
+<span class="sd">    :param folders: dict con percorsi delle cartelle tax_test, tax_ann, xtr_test, xtr_ann, tax, xtr + timenow. Creato con create_folder_structure</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">zip_loop</span><span class="p">(</span><span class="n">ann_list</span><span class="p">:</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">test_list</span><span class="p">:</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">zip_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">zip_name</span><span class="si">}</span><span class="s1">.zip&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">zipObj</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">ann_list</span><span class="p">):</span>
+                <span class="n">zipObj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">arcname</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;ann/</span><span class="si">{</span><span class="n">zip_name</span><span class="si">}</span><span class="s2">/test/</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="c1"># zipObj.write(f, arcname=f&quot;test/{train_zip_name}/ann/{f.name}.txt&quot;)</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">test_list</span><span class="p">):</span>
+                <span class="n">zipObj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">arcname</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;test/</span><span class="si">{</span><span class="n">zip_name</span><span class="si">}</span><span class="s2">/test/</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">folders</span><span class="p">[</span><span class="s2">&quot;tax_folder&quot;</span><span class="p">],</span> <span class="n">folders</span><span class="p">[</span><span class="s2">&quot;xtr_folder&quot;</span><span class="p">]]:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
+
+        <span class="n">tax_train_annotations</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="s2">&quot;ann_split&quot;</span> <span class="o">/</span> <span class="s2">&quot;train&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;**/*.ann&#39;</span><span class="p">)</span>
+        <span class="n">tax_train_tests</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="s2">&quot;test_split&quot;</span> <span class="o">/</span> <span class="s2">&quot;train&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;**/*.txt&#39;</span><span class="p">)</span>
+        <span class="n">tax_val_annotations</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="s2">&quot;ann_split&quot;</span> <span class="o">/</span> <span class="s2">&quot;val&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;**/*.ann&#39;</span><span class="p">)</span>
+        <span class="n">tax_val_tests</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="s2">&quot;test_split&quot;</span> <span class="o">/</span> <span class="s2">&quot;val&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;**/*.txt&#39;</span><span class="p">)</span>
+
+        <span class="n">train_zip_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_train_lib_</span><span class="si">{</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">val_zip_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_val_lib_</span><span class="si">{</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="c1"># create train lib</span>
+        <span class="n">zip_loop</span><span class="p">(</span><span class="n">tax_train_annotations</span><span class="p">,</span> <span class="n">tax_train_tests</span><span class="p">,</span> <span class="n">train_zip_name</span><span class="p">)</span>
+
+        <span class="c1"># create test lib</span>
+        <span class="n">zip_loop</span><span class="p">(</span><span class="n">tax_val_annotations</span><span class="p">,</span> <span class="n">tax_val_tests</span><span class="p">,</span> <span class="n">val_zip_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="normalize_fucked_encoding"><a class="viewcode-back" href="../../platform_utils_eai.html#platform_utils_eai.functions.normalize_fucked_encoding">[docs]</a><span class="k">def</span> <span class="nf">normalize_fucked_encoding</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">qmark_char</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    reference table: https://www.i18nqa.com/debug/utf8-debug.html</span>
+
+<span class="sd">    :param string: testo da correggere</span>
+<span class="sd">    :param qmark_char: carattere default in caso di �</span>
+<span class="sd">    :return: testo corretto</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">char_to_replace</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;�&quot;</span><span class="p">:</span> <span class="n">qmark_char</span><span class="p">,</span>
+        <span class="s2">&quot;â‚¬&quot;</span><span class="p">:</span> <span class="s2">&quot;€&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;â€š&quot;</span><span class="p">:</span> <span class="s2">&quot;‚&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;â€ž&quot;</span><span class="p">:</span> <span class="s2">&quot;„&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;â€¦&quot;</span><span class="p">:</span> <span class="s2">&quot;…&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;â€¡&quot;</span><span class="p">:</span> <span class="s2">&quot;‡&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;â€°&quot;</span><span class="p">:</span> <span class="s2">&quot;‰&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;â„¢&quot;</span><span class="p">:</span> <span class="s2">&quot;™&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;â€¹&quot;</span><span class="p">:</span> <span class="s2">&quot;‹&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;â€˜&quot;</span><span class="p">:</span> <span class="s2">&quot;&#39;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;â€™&quot;</span><span class="p">:</span> <span class="s2">&quot;&#39;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;â€œ&quot;</span><span class="p">:</span> <span class="s2">&quot;“&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;â€¢&quot;</span><span class="p">:</span> <span class="s2">&quot;•&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;â€“&quot;</span><span class="p">:</span> <span class="s2">&quot;–&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;â€”&quot;</span><span class="p">:</span> <span class="s2">&quot;—&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ëœ&quot;</span><span class="p">:</span> <span class="s2">&quot;˜&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Å¡&quot;</span><span class="p">:</span> <span class="s2">&quot;š&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;â€º&quot;</span><span class="p">:</span> <span class="s2">&quot;›&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Æ’&quot;</span><span class="p">:</span> <span class="s2">&quot;ƒ&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Å“&quot;</span><span class="p">:</span> <span class="s2">&quot;œ&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ë†&quot;</span><span class="p">:</span> <span class="s2">&quot;ˆ&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Å’&quot;</span><span class="p">:</span> <span class="s2">&quot;Œ&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Å½&quot;</span><span class="p">:</span> <span class="s2">&quot;Ž&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Å¾&quot;</span><span class="p">:</span> <span class="s2">&quot;ž&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Å¸&quot;</span><span class="p">:</span> <span class="s2">&quot;Ÿ&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â¡&quot;</span><span class="p">:</span> <span class="s2">&quot;¡&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â¢&quot;</span><span class="p">:</span> <span class="s2">&quot;¢&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â£&quot;</span><span class="p">:</span> <span class="s2">&quot;£&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â¤&quot;</span><span class="p">:</span> <span class="s2">&quot;¤&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â¥&quot;</span><span class="p">:</span> <span class="s2">&quot;¥&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â¦&quot;</span><span class="p">:</span> <span class="s2">&quot;¦&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â§&quot;</span><span class="p">:</span> <span class="s2">&quot;§&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â¨&quot;</span><span class="p">:</span> <span class="s2">&quot;¨&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â©&quot;</span><span class="p">:</span> <span class="s2">&quot;©&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Âª&quot;</span><span class="p">:</span> <span class="s2">&quot;ª&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â«&quot;</span><span class="p">:</span> <span class="s2">&quot;«&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â¬&quot;</span><span class="p">:</span> <span class="s2">&quot;¬&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â­&quot;</span><span class="p">:</span> <span class="s2">&quot;­&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â®&quot;</span><span class="p">:</span> <span class="s2">&quot;®&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â¯&quot;</span><span class="p">:</span> <span class="s2">&quot;¯&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â°&quot;</span><span class="p">:</span> <span class="s2">&quot;°&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â±&quot;</span><span class="p">:</span> <span class="s2">&quot;±&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â²&quot;</span><span class="p">:</span> <span class="s2">&quot;²&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â³&quot;</span><span class="p">:</span> <span class="s2">&quot;³&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â´&quot;</span><span class="p">:</span> <span class="s2">&quot;´&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Âµ&quot;</span><span class="p">:</span> <span class="s2">&quot;µ&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â¶&quot;</span><span class="p">:</span> <span class="s2">&quot;¶&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â·&quot;</span><span class="p">:</span> <span class="s2">&quot;·&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â¸&quot;</span><span class="p">:</span> <span class="s2">&quot;¸&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â¹&quot;</span><span class="p">:</span> <span class="s2">&quot;¹&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Âº&quot;</span><span class="p">:</span> <span class="s2">&quot;º&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â»&quot;</span><span class="p">:</span> <span class="s2">&quot;»&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â¼&quot;</span><span class="p">:</span> <span class="s2">&quot;¼&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â½&quot;</span><span class="p">:</span> <span class="s2">&quot;½&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â¾&quot;</span><span class="p">:</span> <span class="s2">&quot;¾&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â¿&quot;</span><span class="p">:</span> <span class="s2">&quot;¿&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;â€&quot;</span><span class="p">:</span> <span class="s2">&quot;†&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã€&quot;</span><span class="p">:</span> <span class="s2">&quot;À&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã‚&quot;</span><span class="p">:</span> <span class="s2">&quot;Â&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ãƒ&quot;</span><span class="p">:</span> <span class="s2">&quot;Ã&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã„&quot;</span><span class="p">:</span> <span class="s2">&quot;Ä&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã…&quot;</span><span class="p">:</span> <span class="s2">&quot;Å&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã†&quot;</span><span class="p">:</span> <span class="s2">&quot;Æ&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã‡&quot;</span><span class="p">:</span> <span class="s2">&quot;Ç&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ãˆ&quot;</span><span class="p">:</span> <span class="s2">&quot;È&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã‰&quot;</span><span class="p">:</span> <span class="s2">&quot;É&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ÃŠ&quot;</span><span class="p">:</span> <span class="s2">&quot;Ê&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã‹&quot;</span><span class="p">:</span> <span class="s2">&quot;Ë&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ÃŒ&quot;</span><span class="p">:</span> <span class="s2">&quot;Ì&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã&quot;</span><span class="p">:</span> <span class="s2">&quot;Í&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ÃŽ&quot;</span><span class="p">:</span> <span class="s2">&quot;Î&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã&quot;</span><span class="p">:</span> <span class="s2">&quot;Ï&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã&quot;</span><span class="p">:</span> <span class="s2">&quot;Ð&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã‘&quot;</span><span class="p">:</span> <span class="s2">&quot;Ñ&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã’&quot;</span><span class="p">:</span> <span class="s2">&quot;Ò&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã“&quot;</span><span class="p">:</span> <span class="s2">&quot;Ó&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã”&quot;</span><span class="p">:</span> <span class="s2">&quot;Ô&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã•&quot;</span><span class="p">:</span> <span class="s2">&quot;Õ&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã–&quot;</span><span class="p">:</span> <span class="s2">&quot;Ö&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã—&quot;</span><span class="p">:</span> <span class="s2">&quot;×&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã˜&quot;</span><span class="p">:</span> <span class="s2">&quot;Ø&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã™&quot;</span><span class="p">:</span> <span class="s2">&quot;Ù&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ãš&quot;</span><span class="p">:</span> <span class="s2">&quot;Ú&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã›&quot;</span><span class="p">:</span> <span class="s2">&quot;Û&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ãœ&quot;</span><span class="p">:</span> <span class="s2">&quot;Ü&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ãž&quot;</span><span class="p">:</span> <span class="s2">&quot;Þ&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ÃŸ&quot;</span><span class="p">:</span> <span class="s2">&quot;ß&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã¡&quot;</span><span class="p">:</span> <span class="s2">&quot;á&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã¢&quot;</span><span class="p">:</span> <span class="s2">&quot;â&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã£&quot;</span><span class="p">:</span> <span class="s2">&quot;ã&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã¤&quot;</span><span class="p">:</span> <span class="s2">&quot;ä&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã¥&quot;</span><span class="p">:</span> <span class="s2">&quot;å&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã¦&quot;</span><span class="p">:</span> <span class="s2">&quot;æ&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã§&quot;</span><span class="p">:</span> <span class="s2">&quot;ç&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ãµ&quot;</span><span class="p">:</span> <span class="s2">&quot;õ&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã¶&quot;</span><span class="p">:</span> <span class="s2">&quot;ö&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã·&quot;</span><span class="p">:</span> <span class="s2">&quot;÷&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã¸&quot;</span><span class="p">:</span> <span class="s2">&quot;ø&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã¹&quot;</span><span class="p">:</span> <span class="s2">&quot;ù&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ãº&quot;</span><span class="p">:</span> <span class="s2">&quot;ú&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã»&quot;</span><span class="p">:</span> <span class="s2">&quot;û&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã¼&quot;</span><span class="p">:</span> <span class="s2">&quot;ü&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã½&quot;</span><span class="p">:</span> <span class="s2">&quot;ý&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã¾&quot;</span><span class="p">:</span> <span class="s2">&quot;þ&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã¿&quot;</span><span class="p">:</span> <span class="s2">&quot;ÿ&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã¨&quot;</span><span class="p">:</span> <span class="s2">&quot;è&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã©&quot;</span><span class="p">:</span> <span class="s2">&quot;é&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ãª&quot;</span><span class="p">:</span> <span class="s2">&quot;ê&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã«&quot;</span><span class="p">:</span> <span class="s2">&quot;ë&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã¬&quot;</span><span class="p">:</span> <span class="s2">&quot;ì&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã­&quot;</span><span class="p">:</span> <span class="s2">&quot;í&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã®&quot;</span><span class="p">:</span> <span class="s2">&quot;î&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã¯&quot;</span><span class="p">:</span> <span class="s2">&quot;ï&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã°&quot;</span><span class="p">:</span> <span class="s2">&quot;ð&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã±&quot;</span><span class="p">:</span> <span class="s2">&quot;ñ&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã²&quot;</span><span class="p">:</span> <span class="s2">&quot;ò&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã³&quot;</span><span class="p">:</span> <span class="s2">&quot;ó&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã´&quot;</span><span class="p">:</span> <span class="s2">&quot;ô&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;â€&quot;</span><span class="p">:</span> <span class="s2">&quot;&#39;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã&quot;</span><span class="p">:</span> <span class="s2">&quot;à&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã&quot;</span><span class="p">:</span> <span class="s2">&quot;Ý&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ã&quot;</span><span class="p">:</span> <span class="s2">&quot;Á&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Å&quot;</span><span class="p">:</span> <span class="s2">&quot;Š&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Â&quot;</span><span class="p">:</span> <span class="s2">&quot; &quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ś&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ť&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">:</span> <span class="s2">&quot;&#39;&quot;</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">char_to_replace</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">string</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2023, Simone Martin Marotta.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
