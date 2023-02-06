@@ -22,7 +22,7 @@ from typing import Generator
 
 def create_annotated_file(folders: dict, filename: str, text: str, annotations: list):
     """
-    Generic annotation creation function, needs to be worked on
+    Generic annotation creation function, needs to be worked on. Create test and ann files from content fed straight to the function.
 
     :param folders: dict con percorsi delle cartelle tax_test, tax_ann, xtr_test, xtr_ann, tax, xtr + timenow. Creato con create_folder_structure
     :param filename: nome file senza estensione
