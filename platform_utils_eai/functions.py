@@ -5,10 +5,12 @@ from datetime import datetime
 import os
 import zipfile
 from pathlib import Path
-from typing import Generator
+from typing import Generator, Union
 import splitfolders
 import random
 import shutil
+import json
+import csv
 
 
 # class AnnotationJob:
@@ -23,7 +25,37 @@ import shutil
 #             self.taxonomy = []
 
 
-def create_annotated_file(folders: dict, filename: str, text: str, annotations: list):
+def make_json_from_csv(csvFilePath: Union[str, Path], jsonFilePath: Union[str, Path], primary_key: str):
+    """
+    Make a json file out of a csv creating an dictionary of {"pk":"all row content"} objects.
+
+    :param csvFilePath:
+    :param jsonFilePath:
+    :param primary_key: column of the csv that will be treated as pk
+    :return:
+    """
+    # create a dictionary
+    data = {}
+
+    # Open a csv reader called DictReader
+    with open(csvFilePath, encoding='utf-8') as csvf:
+        csvReader = csv.DictReader(csvf)
+
+        # Convert each row into a dictionary
+        # and add it to data
+        for rows in csvReader:
+            # Assuming a column named 'No' to
+            # be the primary key
+            key = rows[primary_key]
+            data[key] = rows
+
+    # Open a json writer, and use the json.dumps()
+    # function to dump data
+    with open(jsonFilePath, 'w', encoding='utf-8') as jsonf:
+        jsonf.write(json.dumps(data, indent=4))
+
+
+def create_annotated_file(folders: dict, filename: Union[str, Path], text: str, annotations: list):
     """
     Generic annotation creation function, needs to be worked on. Create test and ann files from content fed straight to the function.
 
@@ -48,7 +80,7 @@ def create_annotated_file(folders: dict, filename: str, text: str, annotations: 
     ann.close()
 
 
-def create_folder_structure(root_path: str) -> dict:
+def create_folder_structure(root_path: Union[str, Path]) -> dict:
     """
     Creates folder structure to be used by :func:`create_libraries_zip`
 
