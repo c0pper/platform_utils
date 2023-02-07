@@ -6,6 +6,9 @@ import os
 import zipfile
 from pathlib import Path
 from typing import Generator
+import splitfolders
+import random
+import shutil
 
 
 # class AnnotationJob:
@@ -88,12 +91,11 @@ def create_folder_structure(root_path: str) -> dict:
     }
 
 
-def create_libraries_zip(folders: dict, timestamp: str):
+def create_libraries_zip(folders: dict):
     """
     Creates libraries zip files to ready to be imported to the Platform. Both ann and test files should be split in
     train and val folders and inside there should be a folder for each class (as created by split-folders package)
 
-    :param timestamp: momento creazione run - datetime.now().strftime('%d_%m_%y_%H_%M')
     :param folders: dict con percorsi delle cartelle tax_test, tax_ann, xtr_test, xtr_ann, tax, xtr + timenow. Creato con create_folder_structure
     :return:
     """
@@ -106,6 +108,71 @@ def create_libraries_zip(folders: dict, timestamp: str):
             for f in list(test_list):
                 zipObj.write(f, arcname=f"test/{zip_name}/test/{f.name}")
 
+    def split_folder_no_cat(src_folder, dest_folder1, dest_folder2, split_ratio):
+        """
+        Split contents of src folder into 2 separate folders for train and test randomly. Used when there are no folder
+        for cats already available (all files are in one folder).
+
+        :param src_folder:
+        :param dest_folder1:
+        :param dest_folder2:
+        :param split_ratio:
+        :return:
+        """
+        # Get a list of files in the src_folder
+        filenames = [filename for filename in os.listdir(src_folder) if
+                     os.path.isfile(os.path.join(src_folder, filename))]
+
+        # Shuffle the list of files
+        random.seed(1337)
+        random.shuffle(filenames)
+
+        # Split the list of files into two parts
+        split_index = int(split_ratio * len(filenames))
+        first_part = filenames[:split_index]
+        second_part = filenames[split_index:]
+
+        # Move the files in the first part to dest_folder1
+        for filename in first_part:
+            shutil.move(os.path.join(src_folder, filename), os.path.join(dest_folder1, filename))
+
+        # Move the files in the second part to dest_folder2
+        for filename in second_part:
+            shutil.move(os.path.join(src_folder, filename), os.path.join(dest_folder2, filename))
+
+    tax_ann_folder_empty = not any(folders["tax_ann_folder"].iterdir())
+    if not tax_ann_folder_empty:
+        has_category_folders = any(item.is_dir() for item in folders["tax_ann_folder"].glob("*"))
+
+        if has_category_folders:
+            splitfolders.ratio(folders["tax_ann_folder"], output=Path(folders["tax_ann_split_folder"]),
+                               seed=1337, ratio=(.8, .2), move=True)
+            splitfolders.ratio(folders["tax_test_folder"], output=Path(folders["tax_test_split_folder"]),
+                               seed=1337, ratio=(.8, .2), move=True)
+
+        else:
+            Path(folders["tax_ann_split_folder"] / "train").mkdir(exist_ok=True)
+            Path(folders["tax_ann_split_folder"] / "val").mkdir(exist_ok=True)
+            Path(folders["tax_test_split_folder"] / "train").mkdir(exist_ok=True)
+            Path(folders["tax_test_split_folder"] / "val").mkdir(exist_ok=True)
+
+            split_folder_no_cat(folders["tax_ann_folder"], folders["tax_ann_split_folder"] / "train",
+                                folders["tax_ann_split_folder"] / "val", 0.8)
+            split_folder_no_cat(folders["tax_test_folder"], folders["tax_test_split_folder"] / "train",
+                                folders["tax_test_split_folder"] / "val", 0.8)
+
+        shutil.rmtree(folders["tax_ann_folder"])
+        shutil.rmtree(folders["tax_test_folder"])
+
+    xtr_ann_folder_empty = not any(folders["xtr_ann_folder"].iterdir())
+    if not xtr_ann_folder_empty:
+        splitfolders.ratio(folders["xtr_ann_folder"], output=Path(folders["xtr_ann_split_folder"]),
+                           seed=1337, ratio=(.8, .2), move=True)
+        splitfolders.ratio(folders["xtr_test_folder"], output=Path(folders["xtr_test_split_folder"]),
+                           seed=1337, ratio=(.8, .2), move=True)
+        shutil.rmtree(folders["xtr_ann_folder"])
+        shutil.rmtree(folders["xtr_test_folder"])
+
     for i in [folders["tax_folder"], folders["xtr_folder"]]:
         os.chdir(i)
         print(os.getcwd())
@@ -115,8 +182,8 @@ def create_libraries_zip(folders: dict, timestamp: str):
         tax_val_annotations = Path(i / "ann_split" / "val").glob(f'**/*.ann')
         tax_val_tests = Path(i / "test_split" / "val").glob(f'**/*.txt')
 
-        train_zip_name = f"{i.name}_train_lib_{timestamp}"
-        val_zip_name = f"{i.name}_val_lib_{timestamp}"
+        train_zip_name = f"{i.name}_train_lib_{folders['timenow']}"
+        val_zip_name = f"{i.name}_val_lib_{folders['timenow']}"
         # create train lib
         zip_loop(tax_train_annotations, tax_train_tests, train_zip_name)
 

@@ -209,15 +209,12 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="platform_utils_eai.functions.create_libraries_zip">
-<span class="sig-prename descclassname"><span class="pre">platform_utils_eai.functions.</span></span><span class="sig-name descname"><span class="pre">create_libraries_zip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folders</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/platform_utils_eai/functions.html#create_libraries_zip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#platform_utils_eai.functions.create_libraries_zip" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">platform_utils_eai.functions.</span></span><span class="sig-name descname"><span class="pre">create_libraries_zip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folders</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/platform_utils_eai/functions.html#create_libraries_zip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#platform_utils_eai.functions.create_libraries_zip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates libraries zip files to ready to be imported to the Platform. Both ann and test files should be split in
 train and val folders and inside there should be a folder for each class (as created by split-folders package)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>timestamp</strong> – momento creazione run - datetime.now().strftime(‘%d_%m_%y_%H_%M’)</p></li>
-<li><p><strong>folders</strong> – dict con percorsi delle cartelle tax_test, tax_ann, xtr_test, xtr_ann, tax, xtr + timenow. Creato con create_folder_structure</p></li>
-</ul>
+<dd class="field-odd"><p><strong>folders</strong> – dict con percorsi delle cartelle tax_test, tax_ann, xtr_test, xtr_ann, tax, xtr + timenow. Creato con create_folder_structure</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p></p>
