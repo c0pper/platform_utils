@@ -93,7 +93,13 @@
 <li class="toctree-l3"><a class="reference internal" href="#platform_utils_eai.functions.create_annotated_file"><code class="docutils literal notranslate"><span class="pre">create_annotated_file()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#platform_utils_eai.functions.create_folder_structure"><code class="docutils literal notranslate"><span class="pre">create_folder_structure()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#platform_utils_eai.functions.create_libraries_zip"><code class="docutils literal notranslate"><span class="pre">create_libraries_zip()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#platform_utils_eai.functions.create_tax_library_zip"><code class="docutils literal notranslate"><span class="pre">create_tax_library_zip()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#platform_utils_eai.functions.create_xtr_library_zip"><code class="docutils literal notranslate"><span class="pre">create_xtr_library_zip()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#platform_utils_eai.functions.make_json_from_csv"><code class="docutils literal notranslate"><span class="pre">make_json_from_csv()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#platform_utils_eai.functions.normalize_fucked_encoding"><code class="docutils literal notranslate"><span class="pre">normalize_fucked_encoding()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#platform_utils_eai.functions.split_folder_no_cat"><code class="docutils literal notranslate"><span class="pre">split_folder_no_cat()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#platform_utils_eai.functions.split_tax_library"><code class="docutils literal notranslate"><span class="pre">split_tax_library()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#platform_utils_eai.functions.zip_loop"><code class="docutils literal notranslate"><span class="pre">zip_loop()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-platform_utils_eai">Module contents</a></li>
@@ -176,30 +182,34 @@
 <p>This module containes functions to create annotated libraries to be imported into EAI Platform</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="platform_utils_eai.functions.create_annotated_file">
-<span class="sig-prename descclassname"><span class="pre">platform_utils_eai.functions.</span></span><span class="sig-name descname"><span class="pre">create_annotated_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folders</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/platform_utils_eai/functions.html#create_annotated_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#platform_utils_eai.functions.create_annotated_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generic annotation creation function, needs to be worked on. Create test and ann files from content fed straight to the function.</p>
+<span class="sig-prename descclassname"><span class="pre">platform_utils_eai.functions.</span></span><span class="sig-name descname"><span class="pre">create_annotated_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folders</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/platform_utils_eai/functions.html#create_annotated_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#platform_utils_eai.functions.create_annotated_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Crea un file di testo e un file di annotazione nella directory <cite>folders</cite> con i nomi specificati.</p>
+<p>La funzione prende in input un dizionario <cite>folders</cite> che contiene i percorsi alle cartelle necessarie per la
+creazione dei file, il nome del file senza estensione, il testo da annotare e una lista di annotazioni associate
+al testo. La funzione crea un file di testo nella cartella <cite>tax_test_folder</cite> con il nome <cite>{filename}.txt</cite> e un file
+di annotazione nella cartella <cite>tax_ann_folder</cite> con il nome <cite>{filename}.ann</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>folders</strong> – dict con percorsi delle cartelle tax_test, tax_ann, xtr_test, xtr_ann, tax, xtr + timenow. Creato con create_folder_structure</p></li>
-<li><p><strong>filename</strong> – nome file senza estensione</p></li>
-<li><p><strong>text</strong> – testo annotato</p></li>
-<li><p><strong>annotations</strong> – lista di annotazioni associate al testo</p></li>
+<li><p><strong>folders</strong> – Dizionario contenente i percorsi alle cartelle necessarie per la creazione dei file.</p></li>
+<li><p><strong>filename</strong> – Nome del file senza estensione.</p></li>
+<li><p><strong>text</strong> – Testo da annotare.</p></li>
+<li><p><strong>annotations</strong> – Lista di annotazioni associate al testo.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p></p>
+<dd class="field-even"><p>Nessun valore di ritorno.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="platform_utils_eai.functions.create_folder_structure">
-<span class="sig-prename descclassname"><span class="pre">platform_utils_eai.functions.</span></span><span class="sig-name descname"><span class="pre">create_folder_structure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/platform_utils_eai/functions.html#create_folder_structure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#platform_utils_eai.functions.create_folder_structure" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">platform_utils_eai.functions.</span></span><span class="sig-name descname"><span class="pre">create_folder_structure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/platform_utils_eai/functions.html#create_folder_structure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#platform_utils_eai.functions.create_folder_structure" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates folder structure to be used by <a class="reference internal" href="#platform_utils_eai.functions.create_libraries_zip" title="platform_utils_eai.functions.create_libraries_zip"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_libraries_zip()</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>root_path</strong> – Dev’essere raw string. Percorso completo dove verrà creata o si trova già la cartella runs contenente le varie run</p>
+<dd class="field-odd"><p><strong>root_path</strong> – Percorso assoluto dove verrà creata o si trova già la cartella runs contenente le varie run</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>dizionario con percorsi delle cartelle tax_test, tax_ann, xtr_test, xtr_ann, tax, xtr + timenow</p>
@@ -223,6 +233,53 @@ train and val folders and inside there should be a folder for each class (as cre
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="platform_utils_eai.functions.create_tax_library_zip">
+<span class="sig-prename descclassname"><span class="pre">platform_utils_eai.functions.</span></span><span class="sig-name descname"><span class="pre">create_tax_library_zip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folders</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/platform_utils_eai/functions.html#create_tax_library_zip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#platform_utils_eai.functions.create_tax_library_zip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Crea due archivi ZIP contenenti i file di annotazione e di test per le cartelle di addestramento e di validazione
+della tassonomia specificata nella directory <cite>folders</cite>.</p>
+<p>La funzione utilizza la funzione <cite>split_tax_library()</cite> per creare le cartelle di addestramento e di validazione,
+quindi crea due archivi ZIP chiamati <cite>train_lib_{time}</cite> e <cite>val_lib_{time}</cite>, rispettivamente contenenti i file di
+annotazione e di test delle cartelle di addestramento e di validazione.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>folders</strong> – Dizionario contenente i percorsi alle cartelle necessarie per la creazione delle librerie.</p></li>
+<li><p><strong>folders</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Nessun valore di ritorno.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="platform_utils_eai.functions.create_xtr_library_zip">
+<span class="sig-prename descclassname"><span class="pre">platform_utils_eai.functions.</span></span><span class="sig-name descname"><span class="pre">create_xtr_library_zip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folders</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/platform_utils_eai/functions.html#create_xtr_library_zip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#platform_utils_eai.functions.create_xtr_library_zip" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="platform_utils_eai.functions.make_json_from_csv">
+<span class="sig-prename descclassname"><span class="pre">platform_utils_eai.functions.</span></span><span class="sig-name descname"><span class="pre">make_json_from_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csvFilePath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jsonFilePath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primary_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/platform_utils_eai/functions.html#make_json_from_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#platform_utils_eai.functions.make_json_from_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a json file out of a csv creating a dictionary of {“pk”:”all row content”} objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>csvFilePath</strong> – </p></li>
+<li><p><strong>jsonFilePath</strong> – </p></li>
+<li><p><strong>primary_key</strong> – column of the csv that will be treated as pk</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="platform_utils_eai.functions.normalize_fucked_encoding">
 <span class="sig-prename descclassname"><span class="pre">platform_utils_eai.functions.</span></span><span class="sig-name descname"><span class="pre">normalize_fucked_encoding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qmark_char</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/platform_utils_eai/functions.html#normalize_fucked_encoding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#platform_utils_eai.functions.normalize_fucked_encoding" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference table: <a class="reference external" href="https://www.i18nqa.com/debug/utf8-debug.html">https://www.i18nqa.com/debug/utf8-debug.html</a></p>
@@ -235,6 +292,87 @@ train and val folders and inside there should be a folder for each class (as cre
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>testo corretto</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="platform_utils_eai.functions.split_folder_no_cat">
+<span class="sig-prename descclassname"><span class="pre">platform_utils_eai.functions.</span></span><span class="sig-name descname"><span class="pre">split_folder_no_cat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_folder1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_folder2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_ratio</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/platform_utils_eai/functions.html#split_folder_no_cat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#platform_utils_eai.functions.split_folder_no_cat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split contents of src folder into 2 separate folders for train and test randomly. Used when there are no folder
+for cats already available (all files are in one folder, ie: no annotations available).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>src_folder</strong> – </p></li>
+<li><p><strong>dest_folder1</strong> – </p></li>
+<li><p><strong>dest_folder2</strong> – </p></li>
+<li><p><strong>split_ratio</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="platform_utils_eai.functions.split_tax_library">
+<span class="sig-prename descclassname"><span class="pre">platform_utils_eai.functions.</span></span><span class="sig-name descname"><span class="pre">split_tax_library</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folders</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_pct</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/platform_utils_eai/functions.html#split_tax_library"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#platform_utils_eai.functions.split_tax_library" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split the taxonomy annotation and test data folders into training and validation sets,
+using the given train percentage. The input is a dictionary of paths to the input and output
+folders, with the keys “tax_ann_folder”, “tax_ann_split_folder”, “tax_test_folder”,
+and “tax_test_split_folder”. The function uses the splitfolders package to split the data,
+or a custom split_folder_no_cat function if the taxonomy annotation folder does not have
+category subfolders. The input train percentage is a float between 0 and 1. The output is None,
+but the function creates the split folders and removes the original input folders.</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Example</span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">folders</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="s2">&quot;tax_ann_folder&quot;</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;path/to/tax_ann_folder&quot;</span><span class="p">),</span>
+      <span class="s2">&quot;tax_ann_split_folder&quot;</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;path/to/tax_ann_split_folder&quot;</span><span class="p">),</span>
+      <span class="s2">&quot;tax_test_folder&quot;</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;path/to/tax_test_folder&quot;</span><span class="p">),</span>
+      <span class="s2">&quot;tax_test_split_folder&quot;</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;path/to/tax_test_split_folder&quot;</span><span class="p">)</span>
+ <span class="p">}</span>
+ <span class="n">split_tax_library</span><span class="p">(</span><span class="n">folders</span><span class="p">,</span> <span class="n">train_pct</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>folders</strong> (<em>dict</em>) – A dictionary of paths to the input and output folders, with the keys
+“tax_ann_folder”, “tax_ann_split_folder”, “tax_test_folder”, and “tax_test_split_folder”.</p></li>
+<li><p><strong>train_pct</strong> (<em>float</em>) – The percentage of data to use for training, a float between 0 and 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>FileNotFoundError</strong> – If the taxonomy annotation folder is empty.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="platform_utils_eai.functions.zip_loop">
+<span class="sig-prename descclassname"><span class="pre">platform_utils_eai.functions.</span></span><span class="sig-name descname"><span class="pre">zip_loop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zip_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ann_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zip_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/platform_utils_eai/functions.html#zip_loop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#platform_utils_eai.functions.zip_loop" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Crea un archivio ZIP contenente i file delle liste <cite>ann_list</cite> e <cite>test_list</cite>, posizionandoli all’interno delle
+rispettive cartelle ann e test.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>zip_path</strong> – Percorso della directory in cui creare l’archivio ZIP.</p></li>
+<li><p><strong>ann_list</strong> – Lista di percorsi ai file di annotazione.</p></li>
+<li><p><strong>test_list</strong> – Lista di percorsi ai file di test.</p></li>
+<li><p><strong>zip_name</strong> – Nome dell’archivio ZIP.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Nessun valore di ritorno.</p>
 </dd>
 </dl>
 </dd></dl>
